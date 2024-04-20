@@ -20,12 +20,7 @@ function _getTimeData(targetTime) {
 	return { ms, seconds, minutes, hours, days };
 }
 
-const Timebar = ({
-	targetTime,
-	timerRunning,
-	startTimer,
-	stopTimer,
-}) => {
+const Timebar = ({ targetTime, timerRunning, startTimer, stopTimer }) => {
 	const timerRef = useRef();
 	const [calcTime, setCalcTime] = useState({
 		ms: 0,
@@ -54,6 +49,7 @@ const Timebar = ({
 					if (calculatedRemainingTime.ms <= 0) {
 						stopTimer();
 						clearInterval(timerRef.current);
+						localStorage.removeItem("targetTime");
 						// console.log("clearing timer - 1");
 					} else {
 						setCalcTime(calculatedRemainingTime);

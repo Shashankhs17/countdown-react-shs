@@ -1,12 +1,18 @@
 import Timebar from "./components/Timebar";
 import classes from "./App.module.css";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRef } from "react";
 
 const App = () => {
 	const inputRef = useRef();
-	const [targetTime, setTargetTime] = useState(undefined);
+	const [targetTime, setTargetTime] = useState(localStorage.getItem('targetTime') || undefined);
 	const [timerRunning, setTimerRunning] = useState(false);
+
+	// console.log(localStorage.getItem('targetTime'), targetTime);
+
+	useEffect(() => {
+		document.querySelector('input').value = targetTime;
+	});
 
 	function handleStartOrStop(event) {
 		event.preventDefault();
@@ -14,8 +20,10 @@ const App = () => {
 		if (!timerRunning) {
 			if (!inputRef.current.value) return;
 			setTargetTime(inputRef.current.value);
+			localStorage.setItem('targetTime', inputRef.current.value);
 		} else {
 			inputRef.current.value = undefined;
+			localStorage.removeItem('targetTime');
 			setTargetTime(undefined);
 			stopTimer();
 		}
@@ -36,6 +44,7 @@ const App = () => {
 				<input
 					type="datetime-local"
 					ref={inputRef}
+					disabled={timerRunning}
 				/>
 				<button
 					className={timerRunning ? classes.stop : classes.start}
